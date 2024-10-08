@@ -1,5 +1,5 @@
 # Menggunakan image dasar Debian Bullseye
-FROM debian:bullseye
+FROM debian:latest
 
 # Install dasar
 RUN apt update && apt install -y \
@@ -32,14 +32,20 @@ RUN apt update && apt install -y \
 # Install Python dan pip
 RUN apt install -y python3 python3-pip python3-venv
 
-# Install IPython
-RUN pip3 install ipython
+# Buat virtual environment
+RUN python3 -m venv /home/coder/venv
+
+# Aktifkan virtual environment dan instal IPython
+RUN /home/coder/venv/bin/pip install ipython
 
 # Install BunJS
 RUN curl -fsSL https://bun.sh/install | bash
 
 # Menambahkan BunJS ke PATH
 ENV PATH="/root/.bun/bin:$PATH"
+ENV PATH="/home/coder/venv/bin:$PATH"
+
+RUN source /home/coder/venv/bin/activate
 
 # Install paket untuk VSCode (Code-Server)
 RUN curl -fsSL https://code-server.dev/install.sh | sh
